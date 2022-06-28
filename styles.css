@@ -1,0 +1,23 @@
+.Container {
+    display: flex;
+
+}
+.Left {
+    display: flex;
+    width:50%;
+    background-image:url(images/treephoto.avif);
+}
+.Right {
+    display: flex;
+    flex-direction: column;
+    width:50%;
+}
+.Description {
+    display: flex;
+}
+.SignupForm {
+    display: flex;;
+}
+.CreateContainer {
+    display: flex;
+}
