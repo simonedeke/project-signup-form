@@ -23,39 +23,155 @@
             </div>
             <div class="FormContainer">
                 <div class="LetsDoThis">Let's Do This!</div>
-                <form action="" method="" class="SignupForm">
+                <form action="" novalidate method="get" id="signupform" class="SignupForm">
                     <div class="FormInput">
                         <label for="first-name">First name</label>
-                        <input type="text" name="first-name" id="first-name">
+                        <input type="text" name="first-name" id="first-name" placeholder=" " required>
+                        <span></span>
                     </div>
                     <div class="FormInput">
                         <label for="last-name">Last Name</label>
-                        <input type="text" name="last-name" id="last-name">
+                        <input type="text" name="last-name" id="last-name" placeholder=" " required>
+                        <span></span>
                     </div>
                     <div class="FormInput">
                         <label for="email">Email</label>
-                        <input type="email" name="email" id="email">
+                        <input type="email" name="email" id="email" placeholder=" " required>
+                        <span></span>
                     </div>
                     <div class="FormInput">
                         <label for="phone">Phone Number</label>
-                        <input type="text" name="phone" id="phone">
+                        <input type="text" name="phone" id="phone" placeholder=" " required>
+                        <span></span>
                     </div>
                     <div class="FormInput">
                         <label for="pass">Password</label>
-                        <input type="password" name="pass" id="pass">
+                        <input type="password" name="pass" id="pass" error placeholder=" " required>
+                        <span></span>
                     </div>
                     <div class="FormInput">
                         <label for="confirm">Confirm Password</label>
-                        <input type="password" name="confirm" id="confirm">
+                        <input type="password" name="confirm" id="confirm" error placeholder=" " required>
+                        <span></span>
                     </div>
                 </form>
             </div>
             <div class="CreateContainer">
-                <button type="submit" class="CreateButton">Create Account</button>
+                <button type="submit" form="signupform" class="CreateButton">Create Account</button>
                 <div class="Already">Already have an account? <a href="">Log in</a></div>
             </div>
         </div>
         
     </div>
 </body>
+<script>
+    const form = document.getElementById('signupform');
+    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    const nodeList = document.querySelectorAll('input');
+    const inputList = Array.from(nodeList);
+
+    console.log(inputList);
+
+    inputList.forEach(input => {
+        input.addEventListener('input', function(event) {
+            const errorField = document.querySelector('#' + input.id + ' + span');
+            const passError = document.querySelector('#pass' + ' + span');
+            const confirmError = document.querySelector('#confirm' + ' + span');
+
+
+            // console.log('input type = ' + input.type);
+            if(input.type != 'password') {
+                console.log('not input pass type');
+                if(input.id == 'phone') {
+                    const phone = document.getElementById('phone');
+                    console.log('phone regex test');
+                    console.log(phone.value);
+                    console.log(phoneRegex.test(phone.value));
+                    if(phoneRegex.test(phone.value)) {
+                        console.log('clearing phone error field')                
+                        errorField.textContent = '';
+                        errorField.className = '';
+                    }
+                    else {
+                        showError(input);
+                    }
+                } 
+                else if (input.validity.valid) {
+                    console.log('clearing normal error field')                
+                    errorField.textContent = '';
+                    errorField.className = '';
+                } else {
+                    showError(input);
+                }
+            } else {
+                const pass = document.getElementById('pass');
+                const confirm = document.getElementById('confirm');
+                 console.log('input is pass or confirm');
+                // console.log('pass text content:' + pass.value);
+                // console.log('confirm text content:' + confirm.value);
+                if(pass.validity.valid){
+                    passError.textContent = '';
+                    passError.className = '';  
+                } 
+                else if(pass.value == confirm.value) {
+                    console.log('clearing password error field');
+                    confirmError.textContent = '';
+                    confirmError.className = '';                  
+                }
+                //password clearing when blank and shouldnt
+                else {
+                    showError(input);
+                }
+            }
+        });
+    });
+  
+    function showError(input) {
+        console.log('show error begin')
+        const errorField = document.querySelector('#' + input.id + ' + span');
+
+        console.log(input.id);
+        console.log(input.validity);
+        if(input.validity.valueMissing) {
+            errorField.textContent = 'This field is required';
+        }
+        else if(input.validity.typeMismatch) {
+            errorField.textContent = 'Please enter an email address';
+        }
+        else if(input.id == 'phone') {
+            errorField.textContent = 'Invlad phone # format';
+        }
+        else if(input.id === 'pass' || input.id === 'confirm') {
+            const pass = document.getElementById('pass');
+            const confirm = document.getElementById('confirm');
+            const confirmError = document.querySelector('#confirm' + ' + span');
+            if((pass.value != confirm.value) && (confirm.value != '')) {
+                confirmError.textContent = 'Passwords must match'
+                confirmError.className = 'errorTrue';
+            }
+
+        }
+        errorField.className = 'errorTrue';
+    }
+
+    form.addEventListener('submit', function (event) {
+        console.log("eror submit listneer");
+        inputList.forEach(input => {
+            console.log('input: ' + input.id + ' : valid : ' + input.validity.valid)
+            if(!input.validity.valid) {
+                event.preventDefault();
+                
+                // window.history.back();
+            }
+        });
+        
+
+        // event.preventDefault();
+        // if(!inputFirstName.validity.valid) {
+        //     showError();
+        //     event.preventDefault();
+        // }
+    });
+
+</script>
 </html>
