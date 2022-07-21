@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='stylesheet' href="styles.css"/>
-    <title>Document</title>
+    <title>Odin</title>
 </head>
 <body>
     <div class="Container">
@@ -67,10 +67,11 @@
 <script>
     const form = document.getElementById('signupform');
     const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    
+    //Grabs all inputs into an array
     const nodeList = document.querySelectorAll('input');
     const inputList = Array.from(nodeList);
 
-    console.log(inputList);
 
     inputList.forEach(input => {
         input.addEventListener('input', function(event) {
@@ -78,17 +79,11 @@
             const passError = document.querySelector('#pass' + ' + span');
             const confirmError = document.querySelector('#confirm' + ' + span');
 
-
-            // console.log('input type = ' + input.type);
+            //Clears the error field after keystroke or shows error
             if(input.type != 'password') {
-                console.log('not input pass type');
                 if(input.id == 'phone') {
                     const phone = document.getElementById('phone');
-                    console.log('phone regex test');
-                    console.log(phone.value);
-                    console.log(phoneRegex.test(phone.value));
-                    if(phoneRegex.test(phone.value)) {
-                        console.log('clearing phone error field')                
+                    if(phoneRegex.test(phone.value)) {                
                         errorField.textContent = '';
                         errorField.className = '';
                     }
@@ -96,8 +91,7 @@
                         showError(input);
                     }
                 } 
-                else if (input.validity.valid) {
-                    console.log('clearing normal error field')                
+                else if (input.validity.valid) {                
                     errorField.textContent = '';
                     errorField.className = '';
                 } else {
@@ -105,33 +99,24 @@
                 }
             } else {
                 const pass = document.getElementById('pass');
-                const confirm = document.getElementById('confirm');
-                 console.log('input is pass or confirm');
-                // console.log('pass text content:' + pass.value);
-                // console.log('confirm text content:' + confirm.value);
-                if(pass.validity.valid){
-                    passError.textContent = '';
-                    passError.className = '';  
-                } 
-                else if(pass.value == confirm.value) {
+                const confirm = document.getElementById('confirm');          
+                if(pass.value == confirm.value) {
                     console.log('clearing password error field');
                     confirmError.textContent = '';
-                    confirmError.className = '';                  
+                    confirmError.className = ''; 
+                    passError.textContent = '';
+                    passError.className = '';                 
                 }
-                //password clearing when blank and shouldnt
                 else {
                     showError(input);
                 }
             }
         });
     });
-  
+    //displays the correct error in the associated input field
     function showError(input) {
-        console.log('show error begin')
         const errorField = document.querySelector('#' + input.id + ' + span');
 
-        console.log(input.id);
-        console.log(input.validity);
         if(input.validity.valueMissing) {
             errorField.textContent = 'This field is required';
         }
@@ -148,6 +133,7 @@
             if((pass.value != confirm.value) && (confirm.value != '')) {
                 confirmError.textContent = 'Passwords must match'
                 confirmError.className = 'errorTrue';
+                confirmError.valid = false;
             }
 
         }
@@ -155,22 +141,19 @@
     }
 
     form.addEventListener('submit', function (event) {
-        console.log("eror submit listneer");
+        const pass = document.getElementById('pass');
+        const confirm = document.getElementById('confirm');
+        if(pass.value != confirm.value) {
+            event.preventDefault();
+            showError(confirm);
+        }
         inputList.forEach(input => {
             console.log('input: ' + input.id + ' : valid : ' + input.validity.valid)
             if(!input.validity.valid) {
                 event.preventDefault();
-                
-                // window.history.back();
+                showError(input);
             }
         });
-        
-
-        // event.preventDefault();
-        // if(!inputFirstName.validity.valid) {
-        //     showError();
-        //     event.preventDefault();
-        // }
     });
 
 </script>
